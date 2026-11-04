@@ -24,6 +24,7 @@ Interactive, step-by-step visualizations of 12 algorithms. Follow each line of p
 - **Pseudocode view:** highlights the current line and shows the variables and call stack.
 - **Iterations view:** lists every step in execution order. Click a step to jump to it.
 - **Visualization view:** shows the whole algorithm at a glance, stage by stage.
+- **Recurrence and Complexity lessons:** on the divide-and-conquer pages, the Visualization view also draws the recursion tree and walks through how the time and space complexity are derived.
 - **Code view:** shows a working implementation in C++, Java, or Python and highlights the matching lines.
 - **Your own input:** enter 2 to 16 whole numbers, up to 3 digits each. Binary search sorts the list first and also takes a target.
 

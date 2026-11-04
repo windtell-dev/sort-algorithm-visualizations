@@ -27,7 +27,7 @@ function slots(values, cls) {
 
 function renderTree(s, cellClass = () => '') {
   const n = s.A.length;
-  const depth = Math.max(...run.nodes.map(x => x.d));
+  const depth = Math.max(...run.nodes.filter((x, i) => s.nodes[i]).map(x => x.d));
   const centre = x => ((x.lo + x.hi + 1) / 2 / n * 100) + '%';
   let lines = '';
   run.nodes.forEach((p, pi) => {
@@ -38,6 +38,7 @@ function renderTree(s, cellClass = () => '') {
     });
   });
   $('tree').style.height = (depth * ROW + NODE_H) + 'px';
+  $('tree').style.minWidth = (n * 30) + 'px';
   $('tree').innerHTML = `<svg aria-hidden="true">${lines}</svg>` + run.nodes.map((x, i) => {
     const st = s.nodes[i];
     if (!st) return '';
@@ -55,6 +56,11 @@ function renderTree(s, cellClass = () => '') {
 function renderGraph(nodes, edges, height) {
   const tall = height || Math.max(...nodes.map(n => n.y)) + 34;
   $('graph').style.height = tall + 'px';
+  let gap = 100;
+  nodes.forEach((p, i) => nodes.slice(i + 1).forEach(q => {
+    if (p.y === q.y && p.x !== q.x) gap = Math.min(gap, Math.abs(p.x - q.x));
+  }));
+  $('graph').style.minWidth = Math.ceil(38 / (gap / 100)) + 'px';
   const lines = edges.map(e => {
     const a = nodes[e.a], b = nodes[e.b];
     return `<line class="${e.off ? 'off' : ''}" x1="${a.x}%" y1="${a.y + 17}" x2="${b.x}%" y2="${b.y + 17}"/>`;
@@ -147,7 +153,16 @@ function startPlayer(config) {
       </div>
     </div>
     <div class="pane" id="paneList" hidden><ol class="rows" id="rows"></ol></div>
-    <div class="pane" id="paneViz" hidden><div class="overview" id="overview"></div></div>
+    <div class="pane" id="paneViz" hidden>
+      ${cfg.analysis ? `<div class="seg lang viz-tabs" id="vizTabs" role="group" aria-label="Visualization type">
+        <button type="button" data-viz="overview" aria-pressed="true">Stages</button>
+        <button type="button" data-viz="recurrence" aria-pressed="false">Recurrence</button>
+        <button type="button" data-viz="complexity" aria-pressed="false">Complexity</button>
+      </div>` : ''}
+      <div class="overview" id="overview"></div>
+      <div class="analysis" id="recurrence" hidden></div>
+      <div class="analysis" id="complexity" hidden></div>
+    </div>
   </aside>`;
   document.body.prepend(shell);
 
@@ -165,6 +180,7 @@ function startPlayer(config) {
   $('tabCode').onclick = () => setView('code');
   $('tabSrc').onclick = () => setView('src');
   $('tabViz').onclick = () => setView('viz');
+  if (cfg.analysis) $('vizTabs').onclick = e => { const b = e.target.closest('button'); if (b) showVizView(b.dataset.viz); };
   $('tabList').onclick = () => setView('list');
   $('rows').onclick = e => { const b = e.target.closest('button'); if (b) { stop(); go(+b.dataset.i); } };
   $('form').onsubmit = e => { e.preventDefault(); submit(); };
@@ -196,7 +212,17 @@ function submit() {
   render();
 }
 
+function showVizView(view) {
+  document.querySelectorAll('#vizTabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.viz === view));
+  ['overview', 'recurrence', 'complexity'].forEach(id => { $(id).hidden = id !== view; });
+  $('paneViz').scrollTop = 0;
+}
+
 function renderOverview() {
+  if (cfg.analysis) {
+    $('recurrence').innerHTML = cfg.analysis.recurrence(run);
+    $('complexity').innerHTML = cfg.analysis.complexity(run);
+  }
   const rows = cfg.overview(run);
   $('overview').innerHTML = (rows.note ? `<p class="ov-note">${rows.note}</p>` : '') + rows.map(r => {
     const groups = r.groups.map(g => `<span class="ov-g">[${g.map(c =>

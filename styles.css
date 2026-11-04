@@ -48,8 +48,9 @@ button { cursor: pointer; }
 .head { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: flex-end; justify-content: space-between; padding: 4px 4px 2px; }
 .eyebrow, .label { font-size: 11px; letter-spacing: .11em; color: var(--muted); text-transform: uppercase; font-weight: 600; margin: 0; }
 h1 { font-family: var(--serif); font-size: 28px; line-height: 1.08; letter-spacing: -.022em; font-weight: 500; margin: 3px 0 0; }
-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
-form input { width: 330px; max-width: 100%; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-family: var(--mono); font-size: 13px; }
+form { flex: 1 1 340px; max-width: 480px; margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+form input { flex: 1 1 0; width: auto; min-width: 0; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-family: var(--mono); font-size: 13px; }
+form .pill { flex: none; }
 form input:focus { outline: 0; border-color: var(--line-2); }
 .error { color: var(--red); font-size: 13px; width: 100%; margin: 0; text-align: right; }
 .error:empty { display: none; }
@@ -85,8 +86,8 @@ select.pill { -webkit-appearance: none; appearance: none; padding-right: 32px; c
 
 .sec-head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .scroll-x { overflow-x: auto; }
-.array { display: flex; gap: 0; min-width: 520px; }
-.slot { flex: 1 1 0; min-width: 0; text-align: center; }
+.array { display: flex; gap: 0; }
+.slot { flex: 1 1 0; min-width: 32px; text-align: center; }
 .slot small { display: block; font-size: 11px; color: var(--dim); height: 17px; font-variant-numeric: tabular-nums; }
 .slot .ptr { font: 700 12px var(--mono); color: var(--text); padding-top: 2px; }
 .cell { display: block; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; padding: 9px 0; border: 1px solid var(--line-2); border-radius: 0; background: var(--card-2); transition: background .2s, border-color .2s, opacity .2s; }
@@ -97,9 +98,9 @@ select.pill { -webkit-appearance: none; appearance: none; padding-right: 32px; c
 .slot.write .cell { background: var(--green-dim); box-shadow: inset 0 0 0 2px var(--green); border-color: transparent; color: var(--green); }
 .slot.compare .cell { background: var(--purple-dim); box-shadow: inset 0 0 0 2px var(--purple); border-color: transparent; color: var(--purple); }
 .slot.used .cell { opacity: .32; }
-.workspace .array { min-width: 0; }
+.workspace > div { min-width: 0; overflow-x: auto; }
 
-.tree { position: relative; min-width: 640px; }
+.tree { position: relative; }
 .tree svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .tree line { stroke: var(--line-2); stroke-width: 1.25; }
 .tree line.on { stroke: var(--dim); }
@@ -156,13 +157,6 @@ select.pill { -webkit-appearance: none; appearance: none; padding-right: 32px; c
 .rows button.on { background: var(--date-dim); }
 .rows button.on .n, .rows button.on code { color: var(--date); }
 
-@media (max-width: 900px) {
-  .app { grid-template-columns: minmax(0, 1fr); height: auto; padding: 16px; }
-  .main { overflow: visible; }
-  .pane { max-height: 480px; flex: none; }
-  form { justify-content: flex-start; }
-  form input { width: 100%; }
-}
 
 /* quicksort and binary search */
 .slot.scope .cell { background: var(--raised); }
@@ -176,7 +170,7 @@ select.pill { -webkit-appearance: none; appearance: none; padding-right: 32px; c
 .legend .l-hi { background: var(--purple-dim); border-color: var(--purple); }
 .legend .l-piv { background: var(--want-dim); border-color: var(--want); }
 .legend .l-out { opacity: .4; }
-.field-target { width: 84px !important; }
+form .field-target { flex: 0 0 84px; }
 .back { color: inherit; text-decoration: none; }
 .back:hover { color: var(--text); }
 
@@ -241,7 +235,7 @@ body { transition: background-color .35s ease, color .35s ease; }
 .seg.lang { margin: 0 14px 10px; padding: 3px; }
 .seg.lang button { flex: 1 1 0; padding: 5px 6px; font-size: 12px; }
 /* heap and tree diagrams */
-.graph { position: relative; min-width: 520px; margin: 4px 0; }
+.graph { position: relative; margin: 4px 0; }
 .graph svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .graph line { stroke: var(--dim); stroke-width: 1.25; }
 .graph line.off { stroke: var(--line); }
@@ -298,3 +292,76 @@ h1, .tile h2 { font-weight: 400; letter-spacing: -.02em; font-optical-sizing: au
 .ov-g .v { color: var(--purple); }
 .ov-g .b { color: var(--date); }
 @media (max-width: 900px) { .home h1 { font-size: 34px; } }
+
+/* recurrence and complexity lessons */
+.viz-tabs { margin: 0 14px 12px; }
+.analysis { padding: 0 16px 20px; font-size: 13.5px; line-height: 1.5; }
+.analysis h3 { margin: 18px 0 6px; font: 400 20px/1.2 var(--serif); letter-spacing: -.012em; }
+.analysis h3:first-child { margin-top: 2px; }
+.analysis p { margin: 0 0 9px; }
+.analysis ul, .analysis ol { margin: 0 0 10px; padding-left: 20px; }
+.analysis li { margin-bottom: 5px; }
+.analysis code { font: 12px var(--mono); }
+.analysis b { font-weight: 600; }
+.formula { display: block; margin: 0 0 10px; padding: 9px 12px; overflow-x: auto; white-space: pre-wrap; font: 12.5px/1.55 var(--mono); color: var(--text); background: var(--card-2); border-radius: 10px; }
+.analysis .note { padding: 9px 12px; border-radius: 10px; background: var(--date-dim); }
+.analysis .warn { padding: 9px 12px; border-radius: 10px; background: var(--want-dim); }
+.rt { margin: 0 0 10px; }
+.rt-row { display: grid; grid-template-columns: minmax(0, 1fr) 62px; gap: 8px; align-items: center; margin-bottom: 4px; }
+.rt-row > b { text-align: right; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.rt-head { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.rt-head > b { font-size: 11.5px; color: var(--muted); }
+.rt-bar { position: relative; height: 24px; }
+.rt-bar span { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--date) 55%, transparent); border-radius: 5px; background: var(--date-dim); color: var(--date); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rt-bar .leaf { background: var(--card-2); border-color: var(--line-2); color: var(--muted); }
+
+.cost-table { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 10px; margin: 0 0 10px; padding: 8px 12px; border-radius: 10px; background: var(--card-2); }
+.cost-table code { font: 12px/1.7 var(--mono); overflow-wrap: anywhere; }
+.cost-table b { font: 600 12px/1.7 var(--mono); color: var(--date); text-align: right; white-space: nowrap; }
+.viz-tabs { position: sticky; top: 0; z-index: 1; }
+
+/* narrower windows */
+@media (max-width: 1180px) {
+  .app { grid-template-columns: minmax(0, 1fr) 360px; }
+  .side > .seg { margin: 12px 10px; }
+  .side > .seg button { padding: 8px 5px; font-size: 11.5px; }
+  .pass { grid-template-columns: 150px minmax(0, 1fr); }
+  .passes { min-width: 0; }
+}
+@media (max-width: 1000px) {
+  .app { grid-template-columns: minmax(0, 1fr); height: auto; padding: 14px; }
+  .main { overflow: visible; margin: 0; padding: 0; }
+  .side { overflow: visible; }
+  .pane { flex: none; max-height: 560px; }
+  .head { align-items: stretch; flex-direction: column; }
+  form { flex: none; max-width: none; margin-left: 0; width: 100%; }
+  .error { text-align: left; }
+}
+@media (max-width: 680px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .pass { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .pass-note b { display: inline; margin-right: 6px; }
+  .pass-cells span { min-width: 24px; }
+  .passes { gap: 10px; }
+  .sec-head { flex-direction: column; align-items: flex-start; }
+  .legend { gap: 3px 11px; }
+}
+@media (max-width: 560px) {
+  .app { padding: 10px; gap: 10px; }
+  .card { padding-left: 13px; padding-right: 13px; }
+  h1 { font-size: 26px; }
+  .now-text { min-height: 0; }
+  .now-text span { font-size: 19px; }
+  .controls { gap: 8px 10px; }
+  .transport { order: 1; }
+  .controls .field:not(.grow) { order: 2; margin-left: auto; }
+  .controls .field.grow { order: 3; flex: 1 1 100%; }
+  .cell { font-size: 15px; padding: 7px 0; }
+  .node span { font-size: 12px; }
+  .seg button { padding: 8px 5px; font-size: 11.5px; }
+  .seg.lang button { font-size: 11.5px; }
+  .buckets { min-width: 480px; }
+  .home h1 { font-size: 30px; }
+  .wide-pill { padding: 0 16px 0 20px; }
+  .wide-pill span { font-size: 19px; }
+}

@@ -14,6 +14,7 @@
 <script src="code.js"></script>
 <script src="player.js"></script>
 <script src="algos/mergesort.js"></script>
+<script src="analysis.js"></script>
 <script>
 const { PSEUDO, buildSteps } = ALGOS.mergesort;
 
@@ -21,6 +22,7 @@ const { PSEUDO, buildSteps } = ALGOS.mergesort;
 startPlayer({
   title: 'Merge Sort',
   divideAndConquer: true,
+  analysis: ANALYSIS.mergesort,
   pseudo: PSEUDO,
   code: LISTINGS.mergesort,
   initial: '38, 27, 43, 3, 9, 82, 10, 15, 1, 56',

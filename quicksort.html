@@ -14,6 +14,7 @@
 <script src="code.js"></script>
 <script src="player.js"></script>
 <script src="algos/quicksort.js"></script>
+<script src="analysis.js"></script>
 <script>
 const { PSEUDO, buildSteps } = ALGOS.quicksort;
 
@@ -21,6 +22,7 @@ const { PSEUDO, buildSteps } = ALGOS.quicksort;
 startPlayer({
   title: 'Quicksort',
   divideAndConquer: true,
+  analysis: ANALYSIS.quicksort,
   pseudo: PSEUDO,
   code: LISTINGS.quicksort,
   initial: '38, 27, 43, 3, 9, 82, 10, 15, 1, 56',
