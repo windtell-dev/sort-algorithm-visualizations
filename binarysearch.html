@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binary Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<script src="code.js"></script>
+<script src="player.js"></script>
+<script src="algos/binarysearch.js"></script>
+<script>
+const { PSEUDO, buildSteps } = ALGOS.binarysearch;
+
+/* ui */
+startPlayer({
+  title: 'Binary Search',
+  divideAndConquer: true,
+  pseudo: PSEUDO,
+  code: LISTINGS.binarysearch,
+  targetLabel: 'Target',
+  initial: '1, 3, 9, 10, 15, 27, 38, 43, 56, 82',
+  initialTarget: '56',
+  parse(text, targetText) {
+    const list = parseList(text);
+    if (!list) return { error: LIST_ERROR };
+    if (!/^-?\d{1,3}$/.test(targetText.trim())) return { error: 'Enter a whole number target, up to 3 digits.' };
+    list.sort((a, b) => a - b); // binary search only works on a sorted list
+    return { data: { list, target: Number(targetText) }, text: list.join(', ') };
+  },
+  build: buildSteps,
+  overview(r) {
+    const last = r.steps[r.steps.length - 1];
+    const rows = [{ label: `Search for ${last.vars.target ?? last.stack[0].match(/, (-?\d+)\)/)[1]}`, groups: [last.A] }];
+    last.passes.forEach((p, n) => rows.push({ label: `Loop ${n + 1}: ${p.note}`, groups: [last.A.slice(p.lo, p.hi + 1).map((v, i) => p.lo + i === p.mid ? { v, c: last.found === p.mid ? 'g' : 'v' } : v)] }));
+    rows.push({ label: last.found === null ? 'Not found, return -1' : `Found at index ${last.found}`, groups: [] });
+    return rows;
+  },
+  sections: `
+    <section class="card">
+      <div class="sec-head">
+        <p class="label">Sorted array A</p>
+        <ul class="legend">
+          <li><i class="l-range"></i>Still possible</li>
+          <li><i class="l-merge"></i>Middle being checked</li>
+          <li><i class="l-done"></i>Found</li>
+          <li><i class="l-out"></i>Discarded</li>
+        </ul>
+      </div>
+      <div class="scroll-x"><div class="array" id="arrayA"></div></div>
+    </section>
+    <section class="card">
+      <div class="sec-head"><p class="label">Search space, one row per loop</p></div>
+      <div class="scroll-x"><div class="passes" id="passes"></div></div>
+    </section>`,
+  render(s) {
+    $('arrayA').innerHTML = slots(s.A, i => {
+      const ptr = [];
+      if (i === s.lo) ptr.push('lo');
+      if (i === s.mid) ptr.push('mid');
+      if (i === s.hi) ptr.push('hi');
+      let cls = '';
+      if (s.found === i) cls = 'q-done q-focus';
+      else if (s.lo === null) cls = '';
+      else if (i < s.lo || i > s.hi) cls = 'used';
+      else if (i === s.mid) cls = 'q-hi q-focus';
+      else cls = 'q-lo';
+      return { top: i, ptr: ptr.join(' '), cls };
+    });
+    $('passes').innerHTML = s.passes.length
+      ? s.passes.map((p, n) => {
+          const cells = s.A.map((v, i) => {
+            if (i < p.lo || i > p.hi) return '<span class="blank"></span>';
+            const cl = [];
+            if (i === p.lo) cl.push('first');
+            if (i === p.hi) cl.push('last');
+            if (i === p.mid) cl.push(s.found === i ? 'hit' : 'mid');
+            return `<span class="${cl.join(' ')}">${v}</span>`;
+          }).join('');
+          return `<div class="pass"><div class="pass-note"><b>Loop ${n + 1}</b>${p.note}</div><div class="pass-cells">${cells}</div></div>`;
+        }).join('')
+      : '<div class="empty" style="min-height:90px">Each pass of the loop appears here.</div>';
+  },
+});
+</script>
+</body>
+</html>

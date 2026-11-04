@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radix Sort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<script src="code.js"></script>
+<script src="player.js"></script>
+<script src="algos/radixsort.js"></script>
+<script>
+const { PSEUDO, buildSteps } = ALGOS.radixsort;
+
+/* ui */
+function withDigit(v, exp) {
+  const s = String(v);
+  if (!exp) return s;
+  const at = s.length - 1 - Math.round(Math.log10(exp));
+  if (at < 0) return s;
+  return `${s.slice(0, at)}<span class="dig">${s[at]}</span>${s.slice(at + 1)}`;
+}
+
+startPlayer({
+  title: 'Radix Sort',
+  pseudo: PSEUDO,
+  code: LISTINGS.radixsort,
+  initial: '38, 27, 43, 3, 9, 82, 10, 15, 1, 56',
+  parse(text) {
+    const list = parseList(text);
+    if (!list) return { error: LIST_ERROR };
+    if (list.some(v => v < 0)) return { error: 'Radix sort here only handles numbers that are 0 or greater.' };
+    return { data: list, text: list.join(', ') };
+  },
+  build: buildSteps,
+  overview: overviewFromPasses,
+  check: isSortedRun,
+  sections: `
+    <section class="card">
+      <div class="sec-head">
+        <p class="label">Array A</p>
+        <ul class="legend">
+          <li><i class="l-dig"></i>Current digit</li>
+          <li><i class="l-focus"></i>Being read</li>
+          <li><i class="l-done"></i>Sorted</li>
+        </ul>
+      </div>
+      <div class="scroll-x"><div class="array" id="arrayA"></div></div>
+    </section>
+    <section class="card">
+      <div class="workspace">
+        <div><p class="label">Count, by digit</p><div class="array" id="countArr"></div></div>
+        <div><p class="label">Output</p><div class="array" id="out"></div></div>
+      </div>
+    </section>
+    <section class="card">
+      <div class="sec-head"><p class="label">List after each digit</p></div>
+      <div class="scroll-x"><div class="passes" id="passes"></div></div>
+    </section>`,
+  render(s) {
+    $('arrayA').innerHTML = slots(s.A.map(v => withDigit(v, s.exp)), i => {
+      const cls = [];
+      if (s.done) cls.push('q-done');
+      if (s.focus.includes(i)) cls.push('q-focus');
+      return { top: i, cls: cls.join(' '), ptr: i === s.i ? 'i' : '' };
+    });
+    const blank = Array(10).fill('&nbsp;');
+    $('countArr').innerHTML = slots(s.count || blank, i => ({ top: i, cls: i === s.d ? 'q-hi' : '', ptr: i === s.d ? 'd' : '' }));
+    const emptyOut = Array(s.A.length).fill('');
+    $('out').innerHTML = slots((s.out || emptyOut).map(v => (v === '' ? '&nbsp;' : v)), i => ({ top: i, cls: i === s.written ? 'write' : '' }));
+    renderPasses(s);
+  },
+});
+</script>
+</body>
+</html>

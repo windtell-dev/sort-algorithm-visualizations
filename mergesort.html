@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merge Sort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<script src="code.js"></script>
+<script src="player.js"></script>
+<script src="algos/mergesort.js"></script>
+<script>
+const { PSEUDO, buildSteps } = ALGOS.mergesort;
+
+/* ui */
+startPlayer({
+  title: 'Merge Sort',
+  divideAndConquer: true,
+  pseudo: PSEUDO,
+  code: LISTINGS.mergesort,
+  initial: '38, 27, 43, 3, 9, 82, 10, 15, 1, 56',
+  parse(text) { const list = parseList(text); return list ? { data: list, text: list.join(', ') } : { error: LIST_ERROR }; },
+  build: buildSteps,
+  overview(r) {
+    const input = r.steps[0].A, maxD = Math.max(...r.nodes.map(n => n.d));
+    const atDepth = d => r.nodes.filter(n => n.d === d || (n.d < d && n.lo === n.hi)).sort((a, b) => a.lo - b.lo);
+    const slice = n => input.slice(n.lo, n.hi + 1);
+    const rows = [];
+    for (let d = 0; d <= maxD; d++) rows.push({ label: d === 0 ? 'Start' : d === maxD ? 'Single elements' : 'Split', groups: atDepth(d).map(slice) });
+    for (let d = maxD - 1; d >= 0; d--) rows.push({ label: d === 0 ? 'Final merge' : 'Merge', groups: atDepth(d).map(n => slice(n).sort((a, b) => a - b).map(v => ({ v, c: 'g' }))) });
+    rows.note = 'Drawn level by level to show the structure. The real run finishes the left side before starting the right.';
+    return rows;
+  },
+  check: isSortedRun,
+  sections: `
+    <section class="card">
+      <div class="sec-head"><p class="label">Array A</p></div>
+      <div class="scroll-x"><div class="array" id="arrayA"></div></div>
+    </section>
+    <section class="card">
+      <div class="sec-head">
+        <p class="label">Merge sort tree</p>
+        <ul class="legend">
+          <li><i class="l-todo"></i>Not reached</li>
+          <li><i></i>Waiting on its halves</li>
+          <li><i class="l-cur"></i>Current call</li>
+          <li><i class="l-merge"></i>Merging</li>
+          <li><i class="l-done"></i>Sorted</li>
+        </ul>
+      </div>
+      <div class="scroll-x"><div class="tree" id="tree"></div></div>
+    </section>
+    <section class="card">
+      <div class="sec-head"><p class="label">Merge workspace</p></div>
+      <div class="workspace" id="workspace"></div>
+    </section>`,
+  render(s) {
+    const curNode = s.cur && run.nodes.find(n => n.key === s.cur);
+    const writing = s.hl && s.hl.kind === 'write';
+    $('arrayA').innerHTML = slots(s.A, i => ({
+      top: i,
+      ptr: s.mw && s.vars.k === i ? 'k' : '',
+      cls: writing && s.hl.k === i ? 'write' : curNode && i >= curNode.lo && i <= curNode.hi ? 'range' : '',
+    }));
+    renderTree(s);
+    if (!s.mw) {
+      $('workspace').innerHTML = '<div class="empty">L and R appear here when merge() runs.</div>';
+      return;
+    }
+    const side = (name, arr, ptr, p) => {
+      if (!arr) return `<div><p class="label">${name}</p></div>`;
+      const body = slots(arr, i => {
+        const hit = s.hl && (s.hl.kind === 'compare' ? i === ptr : s.hl.side === name && s.hl.idx === i);
+        return { top: i, ptr: i === ptr ? p : '', cls: hit ? s.hl.kind : ptr !== null && i < ptr ? 'used' : '' };
+      });
+      return `<div><p class="label">${name}${ptr !== null ? `, ${p} = ${ptr}${ptr >= arr.length ? ' (empty)' : ''}` : ''}</p><div class="array">${body}</div></div>`;
+    };
+    $('workspace').innerHTML = side('L', s.mw.L, s.mw.i, 'i') + side('R', s.mw.R, s.mw.j, 'j');
+  },
+});
+</script>
+</body>
+</html>

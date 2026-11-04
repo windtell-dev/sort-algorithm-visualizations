@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tree Sort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<script src="code.js"></script>
+<script src="player.js"></script>
+<script src="algos/treesort.js"></script>
+<script>
+const { PSEUDO, buildSteps } = ALGOS.treesort;
+
+/* ui */
+startPlayer({
+  title: 'Tree Sort',
+  backHref: 'special.html',
+  backLabel: 'Other special sorts',
+  pseudo: PSEUDO,
+  code: LISTINGS.treesort,
+  initial: '38, 27, 43, 3, 9, 82, 10, 15, 1, 56',
+  parse(text) { const list = parseList(text); return list ? { data: list, text: list.join(', ') } : { error: LIST_ERROR }; },
+  build: buildSteps,
+  overview(r) {
+    const rows = [{ label: 'Start', groups: [r.steps[0].A] }];
+    const maxD = Math.max(...r.tree.map(t => t.depth));
+    for (let d = 0; d <= maxD; d++) rows.push({ label: d === 0 ? 'Tree root' : `Tree depth ${d}`, groups: r.tree.filter(t => t.depth === d).sort((a, b) => a.rank - b.rank).map(t => [t.value]) });
+    rows.push({ label: 'Read the tree in order', groups: [r.steps[r.steps.length - 1].A.map(v => ({ v, c: 'g' }))] });
+    return rows;
+  },
+  check: isSortedRun,
+  sections: `
+    <section class="card">
+      <div class="sec-head">
+        <p class="label">Array A</p>
+        <ul class="legend">
+          <li><i class="l-piv"></i>Value being inserted</li>
+          <li><i class="l-focus"></i>Just read or written</li>
+          <li><i class="l-done"></i>Written back in order</li>
+        </ul>
+      </div>
+      <div class="scroll-x"><div class="array" id="arrayA"></div></div>
+    </section>
+    <section class="card">
+      <div class="sec-head">
+        <p class="label">Binary search tree</p>
+        <ul class="legend">
+          <li><i class="l-cur"></i>Current node</li>
+          <li><i class="l-done"></i>Written to A</li>
+        </ul>
+      </div>
+      <div class="scroll-x"><div class="graph" id="graph"></div></div>
+    </section>`,
+  render(s) {
+    $('arrayA').innerHTML = slots(s.A, i => {
+      const cls = [], ptr = [];
+      if (s.k !== null && i < s.k) cls.push('q-done');
+      else if (i === s.i) cls.push('q-piv');
+      if (s.focus.includes(i)) cls.push('q-focus');
+      if (i === s.i) ptr.push('i');
+      if (i === s.k) ptr.push('k');
+      return { top: i, cls: cls.join(' '), ptr: ptr.join(' ') };
+    });
+    const count = s.A.length;
+    const nodes = run.tree.slice(0, s.visible).map(t => ({
+      x: (t.rank + 0.5) / count * 100,
+      y: t.depth * 48,
+      label: t.value,
+      cls: [s.visited.includes(t.id) ? 'done' : '', t.id === s.cur ? 'current' : ''].join(' '),
+    }));
+    const edges = run.tree.slice(0, s.visible).filter(t => t.parent !== null).map(t => ({ a: t.parent, b: t.id }));
+    const depth = Math.max(...run.tree.map(t => t.depth));
+    renderGraph(nodes, edges, depth * 48 + 34);
+  },
+});
+</script>
+</body>
+</html>

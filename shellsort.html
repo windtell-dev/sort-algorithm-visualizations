@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shell Sort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<script src="code.js"></script>
+<script src="player.js"></script>
+<script src="algos/shellsort.js"></script>
+<script>
+const { PSEUDO, buildSteps } = ALGOS.shellsort;
+
+/* ui */
+startPlayer({
+  title: 'Shell Sort',
+  pseudo: PSEUDO,
+  code: LISTINGS.shellsort,
+  initial: '38, 27, 43, 3, 9, 82, 10, 15, 1, 56',
+  parse(text) { const list = parseList(text); return list ? { data: list, text: list.join(', ') } : { error: LIST_ERROR }; },
+  build: buildSteps,
+  overview: overviewFromPasses,
+  check: isSortedRun,
+  sections: `
+    <section class="card">
+      <div class="sec-head">
+        <p class="label">Array A</p>
+        <ul class="legend">
+          <li><i class="l-lo"></i>Values one gap apart</li>
+          <li><i class="l-piv"></i>Temp</li>
+          <li><i class="l-hi"></i>Just written</li>
+          <li><i class="l-focus"></i>Being compared or written</li>
+          <li><i class="l-done"></i>Sorted</li>
+        </ul>
+      </div>
+      <div class="scroll-x"><div class="array" id="arrayA"></div></div>
+    </section>
+    <section class="card">
+      <div class="sec-head"><p class="label">List after each gap</p></div>
+      <div class="scroll-x"><div class="passes" id="passes"></div></div>
+    </section>`,
+  render(s) {
+    $('arrayA').innerHTML = slots(s.A, x => {
+      const cls = [], ptr = [];
+      if (s.done) cls.push('q-done');
+      else if (x === s.written) cls.push('q-hi');
+      else if (x === s.keyAt) cls.push('q-piv');
+      else if (s.i !== null && x % s.gap === s.i % s.gap) cls.push('q-lo');
+      if (s.focus.includes(x)) cls.push('q-focus');
+      if (x === s.i) ptr.push('i');
+      if (x === s.j) ptr.push('j');
+      return { top: x, cls: cls.join(' '), ptr: ptr.join(' ') };
+    });
+    renderPasses(s);
+  },
+});
+</script>
+</body>
+</html>
