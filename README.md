@@ -1,8 +1,11 @@
+
 # Sort Algorithm Visualizations
 
 Interactive, step-by-step visualizations of 12 algorithms. Follow each line of pseudocode or real code as it runs and see how it changes the data.
+<img width="1062" height="816" alt="Screenshot 2026-11-04 at 6 12 06 PM" src="https://github.com/user-attachments/assets/8000222b-0f7d-4124-a71f-0935449d9a87" />
+<img width="1671" height="814" alt="Screenshot 2026-11-04 at 6 13 45 PM" src="https://github.com/user-attachments/assets/a65d4ece-8af0-4c30-9440-ff64fece4bdd" />
+<img width="1666" height="816" alt="Screenshot 2026-11-04 at 6 14 38 PM" src="https://github.com/user-attachments/assets/9e0ca2c5-e4c5-42df-a54c-ecdd9ef1df8b" />
 
-![Merge sort visualization mid-merge](screenshot.png)
 
 ## Pages
 
