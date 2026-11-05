@@ -70,13 +70,13 @@ startPlayer({
     const count = s.A.length;
     const nodes = run.tree.slice(0, s.visible).map(t => ({
       x: (t.rank + 0.5) / count * 100,
-      y: t.depth * 48,
+      y: t.depth * 68,
       label: t.value,
       cls: [s.visited.includes(t.id) ? 'done' : '', t.id === s.cur ? 'current' : ''].join(' '),
     }));
     const edges = run.tree.slice(0, s.visible).filter(t => t.parent !== null).map(t => ({ a: t.parent, b: t.id }));
     const depth = Math.max(...run.tree.map(t => t.depth));
-    renderGraph(nodes, edges, depth * 48 + 34);
+    renderGraph(nodes, edges, depth * 68 + 34);
   },
 });
 </script>

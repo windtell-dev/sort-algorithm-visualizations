@@ -69,7 +69,7 @@ startPlayer({
     });
     const nodes = s.A.map((v, i) => {
       const level = Math.floor(Math.log2(i + 1)), place = i + 1 - 2 ** level;
-      return { x: (place + 0.5) / 2 ** level * 100, y: level * 56, label: v, cls: cellClass(i).join(' ') };
+      return { x: (place + 0.5) / 2 ** level * 100, y: level * 76, label: v, cls: cellClass(i).join(' ') };
     });
     const edges = s.A.map((_, i) => i ? { a: Math.floor((i - 1) / 2), b: i, off: i >= s.sortedFrom } : null).filter(Boolean);
     renderGraph(nodes, edges);

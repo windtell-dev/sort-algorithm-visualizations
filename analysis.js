@@ -37,7 +37,7 @@ const log2Floor = n => Math.floor(Math.log2(n));
 /* ui */
 function costTree(levels, n, label) {
   const rows = levels.map(l => `<div class="rt-row"><div class="rt-bar">${l.boxes.map(b =>
-    `<span class="${b.leaf ? 'leaf' : ''}" style="left:${b.lo / n * 100}%;width:${(b.hi - b.lo + 1) / n * 100}%">${b.label}</span>`).join('')}</div><b>${l.cost}</b></div>`).join('');
+    `<span class="${b.leaf ? 'leaf' : ''}" style="left:${b.lo / n * 100}%;width:calc(${(b.hi - b.lo + 1) / n * 100}% - 3px)">${b.label}</span>`).join('')}</div><b>${l.cost}</b></div>`).join('');
   return `<div class="rt"><div class="rt-row rt-head"><span>Problem sizes at each level</span><b>${label}</b></div>${rows}</div>`;
 }
 

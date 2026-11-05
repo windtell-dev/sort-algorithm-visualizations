@@ -3,7 +3,7 @@ const ALGOS = {}; // filled by the files in algos/
 const $ = id => document.getElementById(id);
 const fmt = a => '[' + a.join(', ') + ']';
 const LIST_ERROR = 'Enter 2 to 16 whole numbers, up to 3 digits each, separated by commas.';
-const ROW = 48, NODE_H = 36;
+const ROW = 68, NODE_H = 36;
 const LANGS = [['cpp', 'C++'], ['java', 'Java'], ['python', 'Python']];
 let cfg, run, at = 0, timer = null;
 
@@ -38,7 +38,7 @@ function renderTree(s, cellClass = () => '') {
     });
   });
   $('tree').style.height = (depth * ROW + NODE_H) + 'px';
-  $('tree').style.minWidth = (n * 30) + 'px';
+  $('tree').style.minWidth = (n * 34) + 'px';
   $('tree').innerHTML = `<svg aria-hidden="true">${lines}</svg>` + run.nodes.map((x, i) => {
     const st = s.nodes[i];
     if (!st) return '';
@@ -60,7 +60,7 @@ function renderGraph(nodes, edges, height) {
   nodes.forEach((p, i) => nodes.slice(i + 1).forEach(q => {
     if (p.y === q.y && p.x !== q.x) gap = Math.min(gap, Math.abs(p.x - q.x));
   }));
-  $('graph').style.minWidth = Math.ceil(38 / (gap / 100)) + 'px';
+  $('graph').style.minWidth = Math.ceil(44 / (gap / 100)) + 'px';
   const lines = edges.map(e => {
     const a = nodes[e.a], b = nodes[e.b];
     return `<line class="${e.off ? 'off' : ''}" x1="${a.x}%" y1="${a.y + 17}" x2="${b.x}%" y2="${b.y + 17}"/>`;
