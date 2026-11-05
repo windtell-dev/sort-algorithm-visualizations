@@ -20,13 +20,13 @@
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #f4efe3; --card: #fbf7ed; --card-2: #ece4d3; --raised: #e3dac6;
-  --line: rgba(40,38,33,.13); --line-2: rgba(40,38,33,.24);
-  --text: #24231f; --muted: #56554f; --dim: #76756f;
-  --green: #2f6b4c; --green-dim: #e0ecdf;
-  --purple: #7955b3; --purple-dim: #ece4f5;
-  --date: #3f6cb0; --date-dim: #e1e9f5;
-  --red: #b8453f;
-  --want: #b0487c; --want-dim: #f9edf3;
+  --line: rgba(40,38,33,.22); --line-2: rgba(40,38,33,.42);
+  --text: #161511; --muted: #45443d; --dim: #5c5b54;
+  --green: #1d5a3c; --green-dim: #d3e8d6;
+  --purple: #5a379b; --purple-dim: #e4d8f5;
+  --date: #23548f; --date-dim: #d6e4f6;
+  --red: #a12f2a;
+  --want: #8f2a5e; --want-dim: #f7dfea;
   --accent: #37352f; --accent-ink: #ffffff;
   --shadow-sm: 0 1px 2px rgba(15,15,15,.07), 0 2px 8px -3px rgba(15,15,15,.12);
 }
@@ -98,6 +98,7 @@ select.pill { -webkit-appearance: none; appearance: none; padding-right: 32px; c
 .slot.write .cell { background: var(--green-dim); box-shadow: inset 0 0 0 2px var(--green); border-color: transparent; color: var(--green); }
 .slot.compare .cell { background: var(--purple-dim); box-shadow: inset 0 0 0 2px var(--purple); border-color: transparent; color: var(--purple); }
 .slot.used .cell { opacity: .32; }
+:root[data-theme="light"] .slot.used .cell { opacity: .5; }
 .workspace > div { min-width: 0; overflow-x: auto; }
 
 .tree { position: relative; }
